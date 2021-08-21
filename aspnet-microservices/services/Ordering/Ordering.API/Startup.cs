@@ -1,10 +1,6 @@
-using Baket.API.GrpcServices;
-using Baket.API.Repository;
-using Discount.GRPC.Protos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Baket.API
+namespace Ordering.API
 {
     public class Startup
     {
@@ -29,22 +25,12 @@ namespace Baket.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = Configuration.GetValue<string>("CacheSettings:ConnectionString");
-            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Baket.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ordering.API", Version = "v1" });
             });
-
-            services.AddScoped<IBasketRepository, BasketRepository>();
-
-            services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(x => x.Address = new Uri(Configuration.GetValue<string>("GrpcSettings:DiscountURL")));
-
-            services.AddScoped<DiscountGrpcService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +40,7 @@ namespace Baket.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Baket.API v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ordering.API v1"));
             }
 
             app.UseRouting();
